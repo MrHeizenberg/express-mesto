@@ -18,5 +18,8 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(userRoute);
 app.use(cardRoute);
+app.use((req, res) => {
+  res.status(404).send({ message: 'Страница не найдена' });
+});
 
 app.listen(PORT);
