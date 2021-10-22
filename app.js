@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const userRoute = require('./routes/users');
 const cardRoute = require('./routes/cards');
 const auth = require('./middlewares/auth');
+const NotFoundError = require('./errors/not-found-err');
 const { login, createUser } = require('./controllers/users');
 
 const PORT = 3000;
@@ -24,12 +25,16 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
+    avatar: Joi.string().pattern(new RegExp('^https?://[a-z]{1,}')),
   }),
 }), createUser);
 app.use(auth);
 app.use(userRoute);
 app.use(cardRoute);
 app.use(errors());
+app.use((req, res, next) => {
+  next(new NotFoundError('Страница не найдена'));
+});
 /* eslint no-unused-vars: ["error", { "args": "none" }] */
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
@@ -40,9 +45,6 @@ app.use((err, req, res, next) => {
         ? 'На сервере произошла ошибка'
         : message,
     });
-});
-app.use((req, res) => {
-  res.status(404).send({ message: 'Страница не найдена' });
 });
 
 app.listen(PORT);
