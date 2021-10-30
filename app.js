@@ -10,23 +10,12 @@ const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/not-found-err');
 const { login, createUser } = require('./controllers/users');
 
-const allowedCors = [
-  'https://praktikum.tk',
-  'http://praktikum.tk',
-  'http://localhost:3000',
-];
 const PORT = 3000;
 const app = express();
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
 app.use(express.json());
-app.use((req, res, next) => {
-  const { origin } = req.headers;
-  if (allowedCors.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', '*');
-  }
-});
 app.use(requestLogger);
 app.post('/signin', celebrate({
   body: Joi.object().keys({
