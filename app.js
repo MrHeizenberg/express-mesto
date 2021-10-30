@@ -26,7 +26,6 @@ app.use((req, res, next) => {
   if (allowedCors.includes(origin)) {
     res.header('Access-Control-Allow-Origin', '*');
   }
-  next();
 });
 app.use(requestLogger);
 app.post('/signin', celebrate({
