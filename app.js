@@ -21,12 +21,9 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
 app.use(express.json());
-app.use(requestLogger);
 app.use((req, res, next) => {
   const { origin } = req.headers;
   const { method } = req;
-  console.log(origin);
-  console.log(allowedCors.includes(origin));
   if (allowedCors.includes(origin)) {
     res.header('Access-Control-Allow-Origin', '*');
   }
@@ -37,6 +34,7 @@ app.use((req, res, next) => {
   }
   next();
 });
+app.use(requestLogger);
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
