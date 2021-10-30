@@ -7,6 +7,12 @@ const NotFoundError = require('../errors/not-found-err');
 const CastError = require('../errors/cast-err');
 const ConflictError = require('../errors/conflict-err');
 
+const allowedCors = [
+  'https://praktikum.tk',
+  'http://praktikum.tk',
+  'http://localhost:3000',
+];
+
 const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email }).select('+password')
@@ -63,6 +69,10 @@ const createUser = (req, res, next) => {
   const {
     email, password,
   } = req.body;
+  const { origin } = req.headers;
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', '*');
+  }
   User.findOne({ email })
     .then((user) => {
       if (user) {
