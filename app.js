@@ -24,10 +24,16 @@ app.use(express.json());
 app.use(requestLogger);
 app.use((req, res, next) => {
   const { origin } = req.headers;
+  const { method } = req;
   console.log(origin);
   console.log(allowedCors.includes(origin));
   if (allowedCors.includes(origin)) {
     res.header('Access-Control-Allow-Origin', '*');
+  }
+  const requestHeaders = req.headers['access-control-request-headers'];
+  if (method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Headers', requestHeaders);
+    return res.end();
   }
   next();
 });
